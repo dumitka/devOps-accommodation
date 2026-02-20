@@ -20,7 +20,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7xvzbfij1dq3i%bhm^00wv5o1*$4t$7=u*5%ea=%5x0a&+m!y-'
+import os
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -120,6 +121,12 @@ STATIC_URL = 'static/'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'accommodation_service.authentication.StatelessJWTAuthentication',
     ),
+}
+
+SIMPLE_JWT = {
+    "SIGNING_KEY": os.getenv("JWT_SIGNING_KEY", SECRET_KEY),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
 }
