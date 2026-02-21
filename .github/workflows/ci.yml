@@ -1,27 +1,27 @@
-name: CI
+name: Django CI
 
 on:
   pull_request:
-    branches: [develop, main]
+    branches: [ develop, main ]
   push:
-    branches: [develop, main]
+    branches: [ develop, main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
 
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+      - name: Build containers
+        run: docker compose build
 
-      - run: pip install -r requirements.txt
-      - run: python manage.py check
-      - run: python manage.py test
+      - name: Run migrations
+        run: docker compose run --rm accommodation-service python manage.py migrate
+
+      - name: Run tests
+        run: docker compose run --rm accommodation-service python manage.py test

@@ -130,3 +130,5 @@ SIMPLE_JWT = {
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
 }
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
