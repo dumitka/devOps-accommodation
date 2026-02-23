@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   accommodations-db:
     image: postgres:15
@@ -20,11 +18,17 @@ services:
       - .:/app
     ports:
       - "8001:8000"
+    networks:
+      - devops-network
     depends_on:
       - accommodations-db
 
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/accommodations/"]
       interval: 30s
       timeout: 10s
       retries: 5
+
+networks:
+  devops-network:
+    external: true
