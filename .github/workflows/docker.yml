@@ -19,10 +19,11 @@ jobs:
         run: cp .env.example .env
 
       - name: Login to GHCR
-        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build image
         run: docker build -t ghcr.io/${{ github.repository_owner }}/accommodation-service:latest .
 
       - name: Push image
         run: docker push ghcr.io/${{ github.repository_owner }}/accommodation-service:latest
+  
