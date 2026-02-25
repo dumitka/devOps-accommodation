@@ -14,14 +14,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Prepare env
+        run: cp .env.example .env
+
       - name: Set up Docker
         uses: docker/setup-buildx-action@v3
 
       - name: Build containers
         run: docker compose build
 
+      - name: Ensure scripts executable
+        run: chmod +x scripts/*.sh
+
       - name: Run migrations
-        run: docker compose run --rm accommodations-service python manage.py migrate
+        run: |
+          docker compose run --rm accommodations-service sh -c "
+            ./scripts/wait-for-service.sh accommodations-db 5432 &&
+            python manage.py migrate
+          "
 
       - name: Run tests
         run: docker compose run --rm accommodations-service python manage.py test
+  

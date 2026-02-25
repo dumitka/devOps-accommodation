@@ -1,34 +1,31 @@
 services:
   accommodations-db:
     image: postgres:15
-    environment:
-      POSTGRES_DB: accommodations
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5433:5432"
+    env_file:
+      - .env
+    networks:
+      - devops
 
   accommodations-service:
     build: .
-    environment:
-      SECRET_KEY: super-secret-accommodation-key
-      JWT_SIGNING_KEY: shared-jwt-secret
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - .:/app
+    env_file:
+      - .env
+    command: >
+      sh -c "
+      sh scripts/wait-for-service.sh accommodations-db 5432 &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
     ports:
       - "8001:8000"
-    networks:
-      - devops-network
     depends_on:
       - accommodations-db
-
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/accommodations/"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+    volumes:
+      - .:/app
+    networks:
+      - devops
 
 networks:
-  devops-network:
+  devops:
+    name: devops-network
     driver: bridge
