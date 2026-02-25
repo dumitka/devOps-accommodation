@@ -23,7 +23,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build image
-        run: \
+        run: |
+          docker build \
           -t ghcr.io/${{ github.repository_owner }}/accommodation-service:latest \
           -t ghcr.io/${{ github.repository_owner }}/accommodation-service:${{ github.sha }} \
           .
