@@ -1,0 +1,31 @@
+services:
+  accommodations-db:
+    image: postgres:15
+    env_file:
+      - .env
+    networks:
+      - devops
+
+  accommodations-service:
+    build: .
+    env_file:
+      - .env
+    command: >
+      sh -c "
+      sh scripts/wait-for-service.sh accommodations-db 5432 &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+    ports:
+      - "8001:8000"
+    depends_on:
+      - accommodations-db
+    volumes:
+      - .:/app
+    networks:
+      - devops
+
+networks:
+  devops:
+    name: devops-network
+    driver: bridge
