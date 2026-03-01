@@ -22,6 +22,7 @@ services:
       - devops-network
     depends_on:
       - accommodations-db
+    container_name: accommodations-service
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/accommodations/"]
@@ -32,3 +33,4 @@ services:
 networks:
   devops-network:
     driver: bridge
+    external: true
