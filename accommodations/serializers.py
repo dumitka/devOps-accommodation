@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Accommodation, Availability
 
+
 class AvailabilitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Availability
@@ -12,4 +13,8 @@ class AccommodationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Accommodation
-        fields = '__all__'
+        fields = [
+            'id', 'host_id', 'title', 'description', 'location', 
+            'price_per_night', 'price_per_guest', 'min_guests', 
+            'max_guests', 'automatic_approval', 'amenities', 'images', 'availabilities'
+        ]

@@ -9,9 +9,11 @@ class Accommodation(models.Model):
     
     price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
     price_per_guest = models.BooleanField(default=False)
-    
+
     min_guests = models.IntegerField(default=1)
     max_guests = models.IntegerField(default=10)
+
+    automatic_approval = models.BooleanField(default=False)
     
     amenities = models.JSONField(default=list) # ["wifi", "parking"]
     images = models.JSONField(default=list) # ["url1", "url2"]
@@ -19,6 +21,7 @@ class Accommodation(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Availability(models.Model):
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE, related_name='availabilities')
